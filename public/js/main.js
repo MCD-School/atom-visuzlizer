@@ -3,6 +3,11 @@ const { enable3d, Scene3D, Canvas, THREE } = ENABLE3D
 
 
 
+
+
+
+
+
 function drawAtom(scene, atom) {
     var protons = atom.np 
     var neutrons = atom.nn
@@ -15,25 +20,89 @@ function drawAtom(scene, atom) {
     var coorsI = 0
     var rotation = 0
     const coors = [
+                    //Cube
+                    [1,1,1]
+                    [1,-1,-1]
+                    [-1,1,-1]
+                    [-1,-1,1]
+
+                    //Octaedro
+                    [1,0,0]
+                    [1,0,0]
+                    [0,0,1]
+                    [-1,0,0]
+                    [-1,0,0]
+                    [0,0,-1]
+
+                    //Icosaedro
                     [0, 1, 1.618],
                     [0, -1, -1.618],
                     [0, -1, 1.618],
                     [0, 1, -1.618],
+
                     [1, 1.618, 0],
                     [-1, -1.618, 0],
                     [1, -1.618, 0],
                     [-1, 1.618, 0],
+                    
                     [1.618, 0, 1],
                     [-1.618, 0, -1],
                     [-1.618, 0, 1],
                     [1.618, 0, -1],
+
+                    //Icosaedro paralelo
+                    [0, 1.618, 1]
+                    [1.618, 1, 0]
+                    [1, 0, 1.618]
+
+                    [0, -1.618, -1]
+                    [-1.618, -1, 0]
+                    [-1, 0, -1.618]
+
+                    [0, -1.618, 1]
+                    [-1.618, 1, 0]
+                    [1, 0, -1.618]
+
+                    [0, 1.618, -1]
+                    [1.618, -1, 0]
+                    [-1, 0, 1.618]
+
+                    //dodecaedro
+                    [1,1,1]
+                    [0,1*1.618,1.618]
                 ]
     
     const particleLevel = new THREE.Group()
 
+    coors.forEach(coor => {
+
+      if (protons > 0){
+        const coor = coors[coorsI]
+
+        var currentProton = scene.third.add.sphere({x: coor[0] * radioIco, y: coor[1] * radioIco, z: coor[2] * radioIco, radius: 3 }, {basic: {color: 0xD13939}})
+        //scene.proton.body.setCollisionFlags(2)
+        particleLevel.add(currentProton)
+        //console.log(particleLevel, protons)
+
+        protons--
+        coorsI++
+      }
+
+      if (neutrons > 0){
+        const coor = coors[coorsI]
+
+        var currentNeutron = scene.third.physics.add.sphere({x: coor[0] * radioIco, y: coor[1] * radioIco, z: coor[2] * radioIco, radius: 3 }, {basic: {color: 0xC4C4C4}})
+        scene.neutron.body.setCollisionFlags(2)
+
+        neutrons--
+        coorsI++
+      }
+      
+    });
+
     while (true) {
 
-
+/*
         if (protons > 0){
             const coor = coors[coorsI]
 
@@ -65,7 +134,7 @@ function drawAtom(scene, atom) {
         }
         */
 
-        if (coorsI > 11) {
+        if (coorsI > 11){
 
             console.log(particleLevel)
             scene.third.add.existing(particleLevel)
