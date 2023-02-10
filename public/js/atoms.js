@@ -12,7 +12,7 @@ var elementosDesconocidos = "#c8c8c8";
 
 
 var atomsList = {
-    h:{
+    H:{
         ma: '1.00794',
         np: 1,
         nn: 1,
@@ -33,7 +33,7 @@ var atomsList = {
         clase:'td-norm'
     },
     
-    au:{
+    Au:{
         ma: '196.9665',
         np: 79,
         nn: 118,
@@ -67,9 +67,104 @@ var atomsList = {
         pos: '6x11',
         col: metalTransicion,
         clase: 'td-norm'
+    },
+    Xe:{
+        sq: 'Xe',
+        nom: 'Xénon',
+        con: [
+            {
+                type: 'Kr'
+            },
+            {
+                nivel: 4,
+                subNivel: 'd',
+                e: 10
+            },
+            {
+                nivel: 5,
+                subNivel: 's',
+                e: 2
+            },
+            {
+                nivel: 5,
+                subNivel: 'p',
+                e: 6
+            },
+        ],
+    },
+    Kr:{
+        sq: 'Kr',
+        nom: 'Kripton',
+        con: [
+            {
+                type: 'Ar'
+            },
+            {
+                nivel: 3,
+                subNivel: 'd',
+                e: 10
+            },
+            {
+                nivel: 4,
+                subNivel: 's',
+                e: 2
+            },
+            {
+                nivel: 4,
+                subNivel: 'p',
+                e: 6
+            },
+        ],
+    },
+    Ar:{
+        sq: 'Ar',
+        nom: 'Argón',
+        con: [
+            {
+                type: 'Ne'
+            },
+            {
+                nivel: 3,
+                subNivel: 's',
+                e: 2
+            },
+            {
+                nivel: 3,
+                subNivel: 'p',
+                e: 6
+            }
+        ],
+    },
+    Ne:{
+        sq: 'Ne',
+        nom: 'Neón',
+        con: [
+            {
+                type: 'He'
+            },
+            {
+                nivel: 3,
+                subNivel: 's',
+                e: 2
+            },
+            {
+                nivel: 2,
+                subNivel: 'p',
+                e: 6
+            }
+        ],
+    },
+    He:{
+        sq: 'He',
+        nom: 'Helio',
+        con: [
+            {
+                nivel: 1,
+                subNivel: 's',
+                e: 2
+            }
+        ],
     }
-
-
 };
 
 
