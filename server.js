@@ -12,7 +12,7 @@ app.get('/', (_, res) => {
     console.log(__dirname)
    // res.sendFile(path.resolve(__dirname, 'index.html'))
    //res.send(html)
-   res.sendFile(path.join(__dirname, 'public', 'medieval-fantasy-book-standalone.html'));
+   res.sendFile(path.join(__dirname, 'public', 'atom-visualizer.html'));
    
 });
 

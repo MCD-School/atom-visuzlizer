@@ -10,7 +10,7 @@ var alogenos = "#fa8cfe";
 var gasesNobles = "#8eddfe";
 var elementosDesconocidos = "#c8c8c8";
 
-
+    
 var atomsList = {
     H:{
         ma: '1.00794',
@@ -32,7 +32,6 @@ var atomsList = {
         col:noMetalicos,
         clase:'td-norm'
     },
-    
     Au:{
         ma: '196.9665',
         np: 79,
@@ -69,7 +68,10 @@ var atomsList = {
         clase: 'td-norm'
     },
     Xe:{
+        ma: '131,29',
         sq: 'Xe',
+        np: 54,
+        nn: 77,
         nom: 'Xénon',
         con: [
             {
@@ -93,6 +95,9 @@ var atomsList = {
         ],
     },
     Kr:{
+        ma: '83,798',
+        np: 36,
+        nn: 48,
         sq: 'Kr',
         nom: 'Kripton',
         con: [
@@ -117,6 +122,9 @@ var atomsList = {
         ],
     },
     Ar:{
+        ma: '39,948',
+        np: 18,
+        nn: 22,
         sq: 'Ar',
         nom: 'Argón',
         con: [
@@ -136,6 +144,9 @@ var atomsList = {
         ],
     },
     Ne:{
+        ma: '20,180',
+        np: 10,
+        nn: 10,
         sq: 'Ne',
         nom: 'Neón',
         con: [
@@ -143,7 +154,7 @@ var atomsList = {
                 type: 'He'
             },
             {
-                nivel: 3,
+                nivel: 2,
                 subNivel: 's',
                 e: 2
             },
@@ -155,6 +166,12 @@ var atomsList = {
         ],
     },
     He:{
+        ma: '4,0026',
+        np: 2,
+        nn: 2,
+        en: '890.1',
+        el: '2.54',
+        na: '79',
         sq: 'He',
         nom: 'Helio',
         con: [
