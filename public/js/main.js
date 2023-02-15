@@ -1,202 +1,299 @@
 const { enable3d, Scene3D, Canvas, THREE } = ENABLE3D
 
-
-
-
-
-
-
-
-
-function drawAtom(scene, atom) {
-    var protons = atom.np 
-    var neutrons = atom.nn
-
-    scene.proton = scene.third.physics.add.sphere({x: 0, y: 0, z: 0, radius: 1 }, {basic: {color: 0xD13939}})
-    protons--
-    scene.proton.body.setCollisionFlags(2)
-
-    var radioIco = 3
-    var coorsI = 0
-    var rotation = 0
-    const coors = [
-                    //Cube
-                    [1,1,1]
-                    [1,-1,-1]
-                    [-1,1,-1]
-                    [-1,-1,1]
-
-                    //Octaedro
-                    [1,0,0]
-                    [1,0,0]
-                    [0,0,1]
-                    [-1,0,0]
-                    [-1,0,0]
-                    [0,0,-1]
-
-                    //Icosaedro
-                    [0, 1, 1.618],
-                    [0, -1, -1.618],
-                    [0, -1, 1.618],
-                    [0, 1, -1.618],
-
-                    [1, 1.618, 0],
-                    [-1, -1.618, 0],
-                    [1, -1.618, 0],
-                    [-1, 1.618, 0],
-                    
-                    [1.618, 0, 1],
-                    [-1.618, 0, -1],
-                    [-1.618, 0, 1],
-                    [1.618, 0, -1],
-
-                    //Icosaedro paralelo
-                    [0, 1.618, 1]
-                    [1.618, 1, 0]
-                    [1, 0, 1.618]
-
-                    [0, -1.618, -1]
-                    [-1.618, -1, 0]
-                    [-1, 0, -1.618]
-
-                    [0, -1.618, 1]
-                    [-1.618, 1, 0]
-                    [1, 0, -1.618]
-
-                    [0, 1.618, -1]
-                    [1.618, -1, 0]
-                    [-1, 0, 1.618]
-
-                    //dodecaedro
-                    [1,1,1]
-                    [0,1*1.618,1.618]
-                ]
-    
-    const particleLevel = new THREE.Group()
-
-    coors.forEach(coor => {
-
-      if (protons > 0){
-        const coor = coors[coorsI]
-
-        var currentProton = scene.third.add.sphere({x: coor[0] * radioIco, y: coor[1] * radioIco, z: coor[2] * radioIco, radius: 3 }, {basic: {color: 0xD13939}})
-        //scene.proton.body.setCollisionFlags(2)
-        particleLevel.add(currentProton)
-        //console.log(particleLevel, protons)
-
-        protons--
-        coorsI++
-      }
-
-      if (neutrons > 0){
-        const coor = coors[coorsI]
-
-        var currentNeutron = scene.third.physics.add.sphere({x: coor[0] * radioIco, y: coor[1] * radioIco, z: coor[2] * radioIco, radius: 3 }, {basic: {color: 0xC4C4C4}})
-        scene.neutron.body.setCollisionFlags(2)
-
-        neutrons--
-        coorsI++
-      }
-      
-    });
-
-    while (true) {
-
-/*
-        if (protons > 0){
-            const coor = coors[coorsI]
-
-            var currentProton = scene.third.add.sphere({x: coor[0] * radioIco, y: coor[1] * radioIco, z: coor[2] * radioIco, radius: 3 }, {basic: {color: 0xD13939}})
-            //scene.proton.body.setCollisionFlags(2)
-            particleLevel.add(currentProton)
-            //console.log(particleLevel, protons)
-
-            protons--
-            coorsI++
-        
-        }else{
-            break
-        }
-
-        
-/*
-        //NEUTRONES
-        if (neutrons > 0){
-            const coor = coors[coorsI]
-
-            scene.neutron = scene.third.physics.add.sphere({x: coor[0] * radioIco, y: coor[1] * radioIco, z: coor[2] * radioIco, radius: 3 }, {basic: {color: 0xC4C4C4}})
-            scene.neutron.body.setCollisionFlags(2)
-
-            neutrons--
-            coorsI++
-        }else{
-            break
-        }
-        */
-
-        if (coorsI > 11){
-
-            console.log(particleLevel)
-            scene.third.add.existing(particleLevel)
-           // scene.third.physics.add.existing(particleLevel)
-
-            coorsI = 0
-            radioIco += 2
-        }
-
-    }
-    
-}
-
-
 class MainScene extends Scene3D {
   constructor() {
     super({ key: 'MainScene' })
   }
-
   init() {
     this.accessThirdDimension()
   }
-
+  preload(){
+    this.third.load.preload('sky', '/assets/img/black.png')
+    
+  }
   create() {
-    this.third.warpSpeed('light', 'orbitControls', 'sky')
+    this.third.warpSpeed('light', 'orbitControls')
     this.third.camera.position.set(100, 100, 20)
 
-    // this.third.physics.debug.enable()
-    drawAtom(this, atomList.au)
-    this.earth = this.third.physics.add.sphere({ y: 2, radius: 0.25 }, { basic: { color: 0x0080ff } })
+    this.third.load.texture('sky').then(sky => (this.third.scene.background = sky))
 
-
-
-
-    // both are kinematic objects
-    //this.sun.body.setCollisionFlags(2)
-    console.log()
-
-    this.earth.body.setCollisionFlags(2)
-
-    this.third.camera.lookAt(this.earth.position.clone())
+    drawAtom(this, atomList.Au)
+    this.third.camera.lookAt(0,0,0)
   }
+
   update(time) {
-    const orbitRadius = 50
-    const date = time * 0.0025
-    const { x, y, z } = this.earth.position.clone()
 
-    // make object orbit around a center
-    // https://stackoverflow.com/questions/42418958/rotate-an-object-around-an-orbit
-    this.earth.position.set(
-      Math.cos(date) * orbitRadius + 2,
-      y,
-      Math.sin(date) * orbitRadius + 1
-    )
+    var velocity = 0.00003
 
-    //https://stackoverflow.com/questions/21483999/using-atan2-to-find-angle-between-two-vectors/21486462
-    const angle = Math.atan2(2 - x, 1 - z)
-    this.earth.rotation.set(0, angle, 0)
+    for (const item in this) {
+      if (item.indexOf('__electron_') == 0) {
+      
+        const date = time * velocity;
 
-    this.earth.body.needUpdate = true
+        this[item].position.set(
+          Math.cos(this[item].degrees + (date * this[item].id)) * this[item].radioOrbital,
+          this[item].position.y,
+          Math.sin(this[item].degrees + (date * this[item].id))  * this[item].radioOrbital
+        )
+
+        this[item].body.needUpdate = true
+      }
+    }
+
+  }
+  
+}
+
+function drawAtom(scene, atom) {
+  var protons = atom.np 
+  var neutrons = atom.nn
+  var atomConfig = atom.con
+
+
+  var level = 1
+  var coorsI = 0
+
+  const coors = [
+    //Center
+   // [0,0,0],
+    //Cube
+    [1,1,1],
+    
+    [1,-1,-1],
+    [-1,-1,-1],
+
+    [-1,1,1],
+
+    [-1,1,-1],
+    [1,-1,1],
+
+    [-1,-1,1],
+    [1,1,-1],
+
+    //Octaedro
+    [1,0,0],
+    [-1,0,0],
+
+    [0,1,0],
+    [0,-1,0],
+    
+    [0,0,1],
+    [0,0,-1],
+
+    //Icosaedro
+    [0, 1, 1.618],
+    [0, -1, -1.618],
+    [0, -1, 1.618],
+    [0, 1, -1.618],
+
+    [1, 1.618, 0],
+    [-1, -1.618, 0],
+    [1, -1.618, 0],
+    [-1, 1.618, 0],
+    
+    [1.618, 0, 1],
+    [-1.618, 0, -1],
+    [-1.618, 0, 1],
+    [1.618, 0, -1],
+
+    //Icosaedro paralelo
+    [0, 1.618, 1],
+    [1.618, 1, 0],
+    [1, 0, 1.618],
+
+    [0, -1.618, -1],
+    [-1.618, -1, 0],
+    [-1, 0, -1.618],
+
+    [0, -1.618, 1],
+    [-1.618, 1, 0],
+    [1, 0, -1.618],
+
+    [0, 1.618, -1],
+    [1.618, -1, 0],
+    [-1, 0, 1.618],
+
+    //dodecaedro
+    [1,1,1],
+    [-1,-1,-1],
+
+    [-1,-1,1],
+    [1,-1,-1],
+
+    [-1,1,1],
+    [1,1,-1],
+    
+    [-1,1,-1],
+    [1,-1,1],
+
+    [0,1/1.618,1.618],
+    [0,-1/1.618,-1.618],
+    [0,1/1.618,-1.618],
+    [0,-1/1.618,1.618],
+
+    [1/1.618,1.618,0],
+    [-1/1.618,-1.618,0],
+    [-1/1.618,1.618,0],
+    [1/1.618,-1.618,0],
+
+    [1.618,0,1/1.618],
+    [-1.618,0,-1/1.618],
+    [-1.618,0,1/1.618],
+    [1.618,0,-1/1.618],
+
+    //dodecaedro inverso
+    
+    [1,1,1],
+    [-1,-1,-1],
+
+    [-1,-1,1],
+    [1,-1,-1],
+
+    [-1,1,1],
+    [1,1,-1],
+    
+    [-1,1,-1],
+    [1,-1,1],
+
+    [0, 1.618, 1/1.618],
+    [0, -1.618, -1/1.618],
+    [0, -1.618, 1/1.618],
+    [0, 1.618, -1/1.618],
+
+    [1.618, 1/1.618, 0],
+    [-1.618, 1/1.618, 0],
+    [1.618, 1/1.618, 0],
+    [-1.618,1/1.618, 0],
+
+    [1/1.618,0,1.618],
+    [-1/1.618,0,-1.618],
+    [-1/1.618,0,1.618],
+    [1/1.618,0,-1.618],
+  ]
+
+  while (true) {
+    
+      //PROTONS
+      if (protons > 0){
+        const coor = coors[coorsI]
+        scene.proton = scene.third.add.sphere({x: coor[0] * level, y: coor[1] * level, z: coor[2] * level, radius: 3 }, {basic: {color: 0xD13939}})
+        lastParticle = "proton"
+        
+        protons--
+        coorsI++
+        
+      }
+        
+      //NEUTRONS
+      if (neutrons > 0){
+          const coor = coors[coorsI]
+          scene.neutron = scene.third.physics.add.sphere({x: coor[0] * level, y: coor[1] * level, z: coor[2] * level, radius: 3 }, {basic: {color: 0xBEBEBE}})
+          scene.neutron.body.setCollisionFlags(2)
+          lastParticle = "neutron"
+          
+          neutrons--
+          coorsI++
+      }
+      
+
+      if (coorsI > coors.length -1) {
+          coorsI = 0
+          level += 2
+      }
+
+      if(protons <= 0 && neutrons <= 0){
+        break
+      }
+
+  }
+
+  drawOrbitals(atomConfig, level, scene, atom)
+
+}
+
+function drawOrbitals(atomConfig, levelNucleo, scene, atomo) {
+  var configuration = 0 
+
+  for (let i = atomConfig.length -1; i > -1; i--) {
+    
+    const atomConf = atomConfig[i];
+    const radioOrbital = atomConf.nivel
+    const minOrbitalMargin = 15
+    var electrons = totalElectrons(atomo.con, atomConf.nivel); // cuantos electrones hay en cada capa aunque no est
+
+   
+    for (let ii = 1; ii < atomConf.e + 1; ii++) {
+
+      var v = Math.floor(Math.random() * 100 - 1) 
+
+      var randomAngle = Math.floor(Math.random() * 10 - 1) 
+      console.log(randomAngle);
+
+      var atomDegree = (2 * Math.PI)/electrons
+
+      atomDegree += atomDegree/randomAngle
+
+      configuration = levelReview(scene, atomConf)
+      atomDegree *= configuration  
+
+      scene['__electron_' + atomo.sq + "_" + atomConf.subNivel + '_' + atomConf.nivel + '_' + ii] = scene.third.physics.add.sphere({ x: levelNucleo + (minOrbitalMargin * radioOrbital * Math.cos(atomDegree)), z: levelNucleo * minOrbitalMargin * radioOrbital * Math.sin(atomDegree), radius: 1 }, { basic: { color: 0xFFC300 } })
+      scene['__electron_' + atomo.sq + "_" + atomConf.subNivel + '_' + atomConf.nivel + '_' + ii].body.setCollisionFlags(2)
+
+      scene['__electron_' + atomo.sq + "_" + atomConf.subNivel + '_' + atomConf.nivel + '_' + ii].radioOrbital = levelNucleo + (minOrbitalMargin * radioOrbital)
+      scene['__electron_' + atomo.sq + "_" + atomConf.subNivel + '_' + atomConf.nivel + '_' + ii].degrees = atomDegree
+      scene['__electron_' + atomo.sq + "_" + atomConf.subNivel + '_' + atomConf.nivel + '_' + ii].nivel = radioOrbital
+      scene['__electron_' + atomo.sq + "_" + atomConf.subNivel + '_' + atomConf.nivel + '_' + ii].id = v
+      
+
+    }
+
+    if (atomConfig[i].type != undefined) {
+      //si no refiere a otro atomo
+      drawOrbitals(atomList[atomConfig[i].type].con, levelNucleo, scene, atomo)
+      
+    }
+
   }
 }
+
+function levelReview(scene, atomConfig){  
+  var result = 1;
+  for (const item in scene) {
+    var elec = item.split("_")
+
+    if (elec[5] == atomConfig.nivel){
+      result++      
+    }
+  }
+
+  return result
+
+}
+
+function totalElectrons(atomConfig, nivel, /*result=0*/) {
+  var result = 0
+
+  for (let i = atomConfig.length -1; i > -1; i--) {
+    
+    const atomConf = atomConfig[i];
+
+    if(atomConf.nivel == nivel && nivel != undefined){
+
+      result += atomConf.e
+
+    }
+
+     if (atomConfig[i].type != undefined){
+        var result2 = totalElectrons(atomList[atomConfig[i].type].con, nivel)
+        if (result2 > 0) {
+          result +=  result2
+        }
+     }
+  }
+
+  return result
+}
+
 
 const config = {
   type: Phaser.WEBGL,

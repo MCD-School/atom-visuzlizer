@@ -1,8 +1,17 @@
-.stats-count{
-    border: 1px solid #000000;
-    z-index: 10;
-    position: absolute;
-    left: 20px;
-    top: 50px;
-    width: 30px;
+body{
+    margin:0px;
+    height: 100%;
+}
+
+#enable3d-three-canvas{
+    margin:0px !important;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+
+#enable3d-phaser-canvas{
+    margin:0px !important;
+    width: 100% !important;
+    height: 99% !important;
 }
