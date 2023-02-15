@@ -17,14 +17,13 @@ class MainScene extends Scene3D {
 
     this.third.load.texture('sky').then(sky => (this.third.scene.background = sky))
 
-    drawAtom(this, atomList.Kr)
+    drawAtom(this, atomList.Au)
     this.third.camera.lookAt(0,0,0)
-    //console.log(this);
   }
 
   update(time) {
 
-    var velocity = 0.0007
+    var velocity = 0.00003
 
     for (const item in this) {
       if (item.indexOf('__electron_') == 0) {
@@ -32,9 +31,9 @@ class MainScene extends Scene3D {
         const date = time * velocity;
 
         this[item].position.set(
-          Math.cos(this[item].degrees + (date * this[item].nivel)) * this[item].radioOrbital,
+          Math.cos(this[item].degrees + (date * this[item].id)) * this[item].radioOrbital,
           this[item].position.y,
-          Math.sin(this[item].degrees + (date * this[item].nivel))  * this[item].radioOrbital
+          Math.sin(this[item].degrees + (date * this[item].id))  * this[item].radioOrbital
         )
 
         this[item].body.needUpdate = true
@@ -221,10 +220,18 @@ function drawOrbitals(atomConfig, levelNucleo, scene, atomo) {
     const radioOrbital = atomConf.nivel
     const minOrbitalMargin = 15
     var electrons = totalElectrons(atomo.con, atomConf.nivel); // cuantos electrones hay en cada capa aunque no est
-    
+
+   
     for (let ii = 1; ii < atomConf.e + 1; ii++) {
-      
+
+      var v = Math.floor(Math.random() * 100 - 1) 
+
+      var randomAngle = Math.floor(Math.random() * 10 - 1) 
+      console.log(randomAngle);
+
       var atomDegree = (2 * Math.PI)/electrons
+
+      atomDegree += atomDegree/randomAngle
 
       configuration = levelReview(scene, atomConf)
       atomDegree *= configuration  
@@ -234,13 +241,15 @@ function drawOrbitals(atomConfig, levelNucleo, scene, atomo) {
 
       scene['__electron_' + atomo.sq + "_" + atomConf.subNivel + '_' + atomConf.nivel + '_' + ii].radioOrbital = levelNucleo + (minOrbitalMargin * radioOrbital)
       scene['__electron_' + atomo.sq + "_" + atomConf.subNivel + '_' + atomConf.nivel + '_' + ii].degrees = atomDegree
-      scene['__electron_' + atomo.sq + "_" + atomConf.subNivel + '_' + atomConf.nivel + '_' + ii].nivel = 1
+      scene['__electron_' + atomo.sq + "_" + atomConf.subNivel + '_' + atomConf.nivel + '_' + ii].nivel = radioOrbital
+      scene['__electron_' + atomo.sq + "_" + atomConf.subNivel + '_' + atomConf.nivel + '_' + ii].id = v
+      
 
     }
 
     if (atomConfig[i].type != undefined) {
       //si no refiere a otro atomo
-      drawOrbitals(atomList[atomConfig[i].type].con, levelNucleo, scene, atomList[atomConfig[i].type])
+      drawOrbitals(atomList[atomConfig[i].type].con, levelNucleo, scene, atomo)
       
     }
 
@@ -261,29 +270,25 @@ function levelReview(scene, atomConfig){
 
 }
 
-
-function totalElectrons(atomConfig, nivel, result=0) {
-  var result = result
+function totalElectrons(atomConfig, nivel, /*result=0*/) {
+  var result = 0
 
   for (let i = atomConfig.length -1; i > -1; i--) {
-  
+    
     const atomConf = atomConfig[i];
 
-    console.log(11111, atomConf, nivel);
-    
     if(atomConf.nivel == nivel && nivel != undefined){
-      result += atomConf.e
-    }
-    
-    console.log(22222, result);
-    
-    if (atomConfig[i].type != undefined) {
-      //si no refiere a otro atomo
-      result += totalElectrons(atomList[atomConfig[i].type].con, nivel, result)
-      
-    }
-    console.log(33333, result);
 
+      result += atomConf.e
+
+    }
+
+     if (atomConfig[i].type != undefined){
+        var result2 = totalElectrons(atomList[atomConfig[i].type].con, nivel)
+        if (result2 > 0) {
+          result +=  result2
+        }
+     }
   }
 
   return result
